@@ -4,7 +4,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "UpstreamPathTemplate": "/c/{id}",
       "DownstreamPathTemplate": "/api/contact/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http", 
       "DownstreamHostAndPorts": [
         {
           "Host": "c_contact_api",
@@ -16,7 +16,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "UpstreamPathTemplate": "/r/{id}",
       "DownstreamPathTemplate": "/api/res/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http", 
       "DownstreamHostAndPorts": [
         {
           "Host": "c_res_api",
