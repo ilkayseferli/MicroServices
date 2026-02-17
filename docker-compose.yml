@@ -5,24 +5,24 @@ services:
     container_name: c_api_gateway
     image: ilkayseferli/apigateway
     build:
-        context: .
-        dockerfile: APIGateway/Dockerfile
+      context: .
+      dockerfile: APIGateway/Dockerfile
     ports:
-        - 80:80
+      - "80:80"
     networks:
-        - micro_net
-        - int_net
+      - micro_net
+      - int_net
 
   s_contact_api:
     container_name: c_contact_api
     image: ilkayseferli/contactapi
     build:
-        context: .
-        dockerfile: Services/ContactAPI/Contact.API/Dockerfile
+      context: .
+      dockerfile: Services/ContactAPI/Contact.API/Dockerfile
     ports:
-        - 7083:7083
+      - "7083:7083"
     networks:
-        - int_net
+      - int_net
 
   s_res_api:
     container_name: c_res_api
@@ -31,14 +31,13 @@ services:
       context: .
       dockerfile: Services/ResAPI/Reservation.API/Dockerfile
     ports:
-        - 7167:7167
+      - "7167:7167"
     networks:
-        - int_net
+      - int_net
 
-    
 networks:
-    int_net:
-        driver: overlay
-        internal: true
-    micro_net:
-        driver: bridge
+  int_net:
+    driver: bridge
+    internal: true
+  micro_net:
+    driver: bridge
