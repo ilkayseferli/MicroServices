@@ -2,35 +2,32 @@ version: "3.1"
 
 services:
   s_api_gateway:
-    container_name: c_api_gateway
     image: ilkayseferli/apigateway
-    build:
-      context: .
-      dockerfile: APIGateway/Dockerfile
+    container_name: c_api_gateway
     ports:
-      - "80:80"
+      - "80:8080" # Dışarıdan 80 ile gel, içerideki 8080'e git
+    environment:
+      - ASPNETCORE_HTTP_PORTS=8080
     networks:
       - micro_net
 
   s_contact_api:
-    container_name: c_contact_api
     image: ilkayseferli/contactapi
-    build:
-      context: .
-      dockerfile: Services/ContactAPI/Contact.API/Dockerfile
+    container_name: c_contact_api
     ports:
-      - "7083:7083"
+      - "7083:8080" # Dışarıdan 7083 ile gel, içerideki 8080'e git
+    environment:
+      - ASPNETCORE_HTTP_PORTS=8080
     networks:
       - micro_net
 
   s_res_api:
-    container_name: c_res_api
     image: ilkayseferli/resapi
-    build:
-      context: .
-      dockerfile: Services/ResAPI/Reservation.API/Dockerfile
+    container_name: c_res_api
     ports:
-      - "7167:7167"
+      - "7167:8080" # Dışarıdan 7167 ile gel, içerideki 8080'e git
+    environment:
+      - ASPNETCORE_HTTP_PORTS=8080
     networks:
       - micro_net
 
