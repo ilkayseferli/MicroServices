@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout & Clean') {
+            steps {
+                // Workspace temizliği yaparak eski dosya kalıntılarını siliyoruz
+                cleanWs()
+                checkout scm
+                
+                // Hangi ayarların geldiğini loglarda görmek için (Debug için çok önemli)
+                sh 'cat APIGateway/ocelot.json'
+            }
+        }
+
+        stage('Stop Existing Containers') {
+            steps {
+                // Önce çalışan eski yapılandırmayı tamamen durduruyoruz
+                sh 'docker-compose down --remove-orphans'
+            }
+        }
+
+        stage('Docker Build (No Cache)') {
+            steps {
+                script {
+                    // --no-cache ekleyerek Docker'ın dosyaları (ocelot.json vb.) sıfırdan kopyalamasını sağlıyoruz
+                    
+                    // API Gateway
+                    sh "docker build --no-cache -t apigateway -f APIGateway/Dockerfile ."
+
+                    // Contact API
+                    sh "docker build --no-cache -t contactapi -f Services/ContactAPI/Contact.API/Dockerfile ."
+
+                    // Reservation API
+                    sh "docker build --no-cache -t resapi -f Services/ResAPI/Reservation.API/Dockerfile ."
+                }
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                // --build zaten yukarıda yapıldı ama compose katmanında da garantiye alıyoruz
+                sh 'docker-compose up -d'
+            }
+        }
+        
+        stage('Post-Deploy Check') {
+            steps {
+                // Gateway'in gerçekten hangi portu ve scheme'i kullandığını loglardan teyit ediyoruz
+                sh 'docker logs c_api_gateway --tail 20'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Jenkins sunucusunda gereksiz imaj birikmemesi için temizlik
+            sh 'docker image prune -f'
+        }
+    }
+}
