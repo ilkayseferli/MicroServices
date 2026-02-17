@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout & Clean') {
             steps {
-                cleanWs() // Workspace'i temizle
+                cleanWs() // Eski dosya kalıntılarını temizle
                 checkout scm
             }
         }
@@ -12,8 +12,8 @@ pipeline {
         stage('Docker Build (No Cache)') {
             steps {
                 script {
-                    // İmaj isimlerini docker-compose.yml ile TAM uyuşacak şekilde (ilkayseferli/...) veriyoruz
-                    // --no-cache ekleyerek ocelot.json değişikliğini zorla içeri alıyoruz
+                    // İmaj isimlerini docker-compose.yml ile tam eşleştiriyoruz
+                    // --no-cache ekleyerek ocelot.json değişikliğini içeriye zorla basıyoruz
                     
                     sh "docker build --no-cache -t ilkayseferli/apigateway -f APIGateway/Dockerfile ."
                     sh "docker build --no-cache -t ilkayseferli/contactapi -f Services/ContactAPI/Contact.API/Dockerfile ."
@@ -24,16 +24,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // --build eklemiyoruz çünkü yukarıda manuel ve --no-cache ile yaptık. 
-                // Sadece up -d diyerek yereldeki taze imajları ayağa kaldırıyoruz.
+                // down komutu eski network ve konteyner kalıntılarını temizler
+                sh 'docker-compose down'
                 sh 'docker-compose up -d'
             }
-        }
-    }
-    
-    post {
-        always {
-            sh 'docker image prune -f'
         }
     }
 }
