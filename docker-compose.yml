@@ -11,7 +11,6 @@ services:
       - "80:80"
     networks:
       - micro_net
-      - int_net
 
   s_contact_api:
     container_name: c_contact_api
@@ -22,7 +21,7 @@ services:
     ports:
       - "7083:7083"
     networks:
-      - int_net
+      - micro_net
 
   s_res_api:
     container_name: c_res_api
@@ -33,11 +32,8 @@ services:
     ports:
       - "7167:7167"
     networks:
-      - int_net
+      - micro_net
 
 networks:
-  int_net:
-    driver: bridge
-    internal: true
   micro_net:
     driver: bridge
