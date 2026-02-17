@@ -4,57 +4,35 @@ pipeline {
     stages {
         stage('Checkout & Clean') {
             steps {
-                // Workspace temizliği yaparak eski dosya kalıntılarını siliyoruz
-                cleanWs()
+                cleanWs() // Workspace'i temizle
                 checkout scm
-                
-                // Hangi ayarların geldiğini loglarda görmek için (Debug için çok önemli)
-                sh 'cat APIGateway/ocelot.json'
-            }
-        }
-
-        stage('Stop Existing Containers') {
-            steps {
-                // Önce çalışan eski yapılandırmayı tamamen durduruyoruz
-                sh 'docker-compose down --remove-orphans'
             }
         }
 
         stage('Docker Build (No Cache)') {
             steps {
                 script {
-                    // --no-cache ekleyerek Docker'ın dosyaları (ocelot.json vb.) sıfırdan kopyalamasını sağlıyoruz
+                    // İmaj isimlerini docker-compose.yml ile TAM uyuşacak şekilde (ilkayseferli/...) veriyoruz
+                    // --no-cache ekleyerek ocelot.json değişikliğini zorla içeri alıyoruz
                     
-                    // API Gateway
-                    sh "docker build --no-cache -t apigateway -f APIGateway/Dockerfile ."
-
-                    // Contact API
-                    sh "docker build --no-cache -t contactapi -f Services/ContactAPI/Contact.API/Dockerfile ."
-
-                    // Reservation API
-                    sh "docker build --no-cache -t resapi -f Services/ResAPI/Reservation.API/Dockerfile ."
+                    sh "docker build --no-cache -t ilkayseferli/apigateway -f APIGateway/Dockerfile ."
+                    sh "docker build --no-cache -t ilkayseferli/contactapi -f Services/ContactAPI/Contact.API/Dockerfile ."
+                    sh "docker build --no-cache -t ilkayseferli/resapi -f Services/ResAPI/Reservation.API/Dockerfile ."
                 }
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy') {
             steps {
-                // --build zaten yukarıda yapıldı ama compose katmanında da garantiye alıyoruz
+                // --build eklemiyoruz çünkü yukarıda manuel ve --no-cache ile yaptık. 
+                // Sadece up -d diyerek yereldeki taze imajları ayağa kaldırıyoruz.
                 sh 'docker-compose up -d'
-            }
-        }
-        
-        stage('Post-Deploy Check') {
-            steps {
-                // Gateway'in gerçekten hangi portu ve scheme'i kullandığını loglardan teyit ediyoruz
-                sh 'docker logs c_api_gateway --tail 20'
             }
         }
     }
     
     post {
         always {
-            // Jenkins sunucusunda gereksiz imaj birikmemesi için temizlik
             sh 'docker image prune -f'
         }
     }
