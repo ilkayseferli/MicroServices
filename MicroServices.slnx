@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Services/" />
+  <Folder Name="/Services/ContactAPI/">
+    <Project Path="Services/ContactAPI/Contact.API.Infrastructure/Contact.API.Infrastructure.csproj" />
+    <Project Path="Services/ContactAPI/Contact.API.Models/Contact.API.Models.csproj" />
+    <Project Path="Services/ContactAPI/Contact.API.Services/Contact.API.Services.csproj" />
+    <Project Path="Services/ContactAPI/Contact.API/Contact.API.csproj" />
+  </Folder>
+  <Folder Name="/Services/ReservationAPI/">
+    <Project Path="Services/ResAPI/Reservation.API.Infrastructure/Reservation.API.Infrastructure.csproj" />
+    <Project Path="Services/ResAPI/Reservation.API.Model/Reservation.API.Model.csproj" />
+    <Project Path="Services/ResAPI/Reservation.API.Service/Reservation.API.Service.csproj" />
+    <Project Path="Services/ResAPI/Reservation.API/Reservation.API.csproj" />
+  </Folder>
+  <Project Path="APIGateway/APIGateway.csproj" />
+</Solution>
