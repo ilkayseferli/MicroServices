@@ -12,5 +12,8 @@
     <Project Path="Services/ResAPI/Reservation.API.Service/Reservation.API.Service.csproj" />
     <Project Path="Services/ResAPI/Reservation.API/Reservation.API.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="APIGateway/APIGateway.csproj" />
 </Solution>
